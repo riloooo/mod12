@@ -1,0 +1,34 @@
+name: security
+on: [push, pull_request]
+
+jobs:
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      # GATE
+      - name: Secret scan (Gitleaks)
+        run: |
+          docker run -v "${{ github.workspace }}:/repo" ghcr.io/gitleaks/gitleaks:latest \
+            detect --source /repo --exit-code 1
+
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # REPORT
+      - name: SAST (Semgrep)
+        run: |
+          pip install semgrep
+          semgrep scan --config auto
+
+  deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # REPORT
+      - name: Dependency scan (Trivy)
+        run: |
+          docker run -v "${{ github.workspace }}:/repo" aquasec/trivy:latest \
+            fs --scanners vuln --exit-code 0 /repo
