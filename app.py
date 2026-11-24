@@ -8,6 +8,4 @@ def ping():
     print("Pinging")
     host = request.args.get("host", "localhost")
     # Deliberately insecure: user input into a shell. SAST should flag this.
-    out = subprocess.check_output(f"ping -c 1 {host}", shell=True)
-    print("Done")
-    return out
+    return subprocess.check_output(f"ping -c 1 {host}", shell=True)
