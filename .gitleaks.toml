@@ -1,0 +1,7 @@
+title = "custom config"
+
+[[rules]]
+id = "aws-access-key-id"
+description = "AWS access key ID"
+regex = '''AKIA[0-9A-Z]{16}'''
+tags = ["aws"]
